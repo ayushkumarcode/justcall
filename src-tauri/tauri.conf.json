@@ -34,6 +34,11 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "macOS": {
+      "signingIdentity": "Apple Development: ayushkumar.2004@icloud.com (ZN4D7UL32M)",
+      "hardenedRuntime": true,
+      "entitlements": null
+    }
   }
 }

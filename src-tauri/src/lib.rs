@@ -145,20 +145,20 @@ pub fn run() {
             };
             
             if is_first_run {
-                log::info!("First run detected - showing welcome");
+                log::info!("First run detected - showing setup wizard");
                 
-                // Auto-open settings window for first-time users
-                let _welcome_window = WebviewWindowBuilder::new(
+                // Open setup wizard for first-time users
+                let _wizard_window = WebviewWindowBuilder::new(
                     app,
-                    "welcome",
-                    WebviewUrl::App("settings.html?welcome=true".into())
+                    "setup-wizard",
+                    WebviewUrl::App("setup-wizard.html".into())
                 )
-                .title("Welcome to Blink - Let's Get Started!")
-                .inner_size(750.0, 650.0)
+                .title("Welcome to Blink - Setup Wizard")
+                .inner_size(700.0, 800.0)
                 .center()
-                .resizable(true)
+                .resizable(false)
                 .build()
-                .expect("failed to build welcome window");
+                .expect("failed to build setup wizard window");
             }
             
             // Listen for hotkey events

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Blink - Setup Wizard</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .wizard-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .wizard-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .wizard-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .wizard-step {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .wizard-step.active {
+            display: block;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border);
+            margin: 0 8px;
+            transition: background 0.3s;
+        }
+        
+        .step-dot.active {
+            background: var(--accent);
+        }
+        
+        .step-dot.completed {
+            background: var(--success);
+        }
+        
+        .wizard-content {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        
+        .code-display {
+            background: var(--bg-primary);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .code-display:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .hotkey-display {
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.5rem 1rem;
+            font-family: monospace;
+            font-weight: bold;
+            display: inline-block;
+            margin: 0.5rem;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feature-list {
+            text-align: left;
+            margin: 1rem 0;
+        }
+        
+        .feature-list li {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: "✨";
+            position: absolute;
+            left: 0;
+        }
+    </style>
+    <script>
+        // Wait for Tauri API to be injected
+        function waitForTauri(callback) {
+            if (window.__TAURI_INTERNALS__ && window.__TAURI_INTERNALS__.invoke) {
+                // Found Tauri v2 API
+                window.__TAURI__ = window.__TAURI__ || {};
+                window.__TAURI__.invoke = function(cmd, args) {
+                    return window.__TAURI_INTERNALS__.invoke(cmd, args);
+                };
+                window.__TAURI__.window = window.__TAURI_INTERNALS__.window;
+                callback();
+            } else if (window.__TAURI__ && window.__TAURI__.invoke) {
+                // Already have Tauri API
+                callback();
+            } else {
+                // Try again in 10ms
+                setTimeout(() => waitForTauri(callback), 10);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="wizard-container">
+        <div class="wizard-header">
+            <div class="wizard-logo">⚡</div>
+            <h1>Welcome to Blink</h1>
+            <p>Let's get you set up for instant video calling!</p>
+        </div>
+        
+        <div class="step-indicator">
+            <div class="step-dot active" data-step="0"></div>
+            <div class="step-dot" data-step="1"></div>
+            <div class="step-dot" data-step="2"></div>
+            <div class="step-dot" data-step="3"></div>
+            <div class="step-dot" data-step="4"></div>
+        </div>
+        
+        <!-- Step 1: Welcome -->
+        <div class="wizard-step active" data-step="0">
+            <div class="wizard-content">
+                <h2>🎉 Welcome to Blink!</h2>
+                <p>Blink makes video calling as simple as pressing a hotkey. No accounts, no hassle - just instant connections.</p>
+                <ul class="feature-list">
+                    <li>Press a hotkey to instantly start a call</li>
+                    <li>Share simple codes with your contacts</li>
+                    <li>Private calls - only people with your code can join</li>
+                    <li>Works with anyone who has Blink</li>
+                </ul>
+                <p><strong>Let's set up your first call target!</strong></p>
+            </div>
+        </div>
+        
+        <!-- Step 2: Create First Target -->
+        <div class="wizard-step" data-step="1">
+            <div class="wizard-content">
+                <h2>👤 Create Your First Target</h2>
+                <p>A "target" is someone you want to call. Let's create your first one!</p>
+                
+                <div style="margin: 1.5rem 0;">
+                    <label for="target-name" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">What should we call this person?</label>
+                    <input type="text" id="target-name" placeholder="e.g., Alex, Mom, Team Meeting" 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-primary); color: var(--text-primary);">
+                </div>
+                
+                <p>We'll generate a unique code for this target that you can share with them.</p>
+            </div>
+        </div>
+        
+        <!-- Step 3: Share Code -->
+        <div class="wizard-step" data-step="2">
+            <div class="wizard-content">
+                <h2>🔗 Share Your Code</h2>
+                <p>Here's your unique code for <strong id="target-name-display"></strong>:</p>
+                
+                <div class="code-display" id="generated-code" onclick="copyCode()">
+                    Click to copy code
+                </div>
+                
+                <p><strong>Share this code</strong> with your contact so they can add you as a target too!</p>
+                <p><small>💡 Tip: Both people need to have each other's codes to call each other.</small></p>
+            </div>
+        </div>
+        
+        <!-- Step 4: Set Hotkey -->
+        <div class="wizard-step" data-step="3">
+            <div class="wizard-content">
+                <h2>⌨️ Set Your Hotkey</h2>
+                <p>Choose a hotkey combination to instantly call <strong id="target-name-display-2"></strong>:</p>
+                
+                <div style="margin: 1.5rem 0;">
+                    <p>Your hotkey will be:</p>
+                    <div class="hotkey-display" id="hotkey-display">Cmd+Shift+J</div>
+                </div>
+                
+                <p>Press this combination anytime to instantly start a call!</p>
+                <p><small>💡 You can change this later in Settings → Hotkeys</small></p>
+            </div>
+        </div>
+        
+        <!-- Step 5: All Done -->
+        <div class="wizard-step" data-step="4">
+            <div class="wizard-content">
+                <div class="success-icon">🎉</div>
+                <h2>All Set!</h2>
+                <p>Blink is now configured and ready to use!</p>
+                
+                <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius); margin: 1rem 0; text-align: left;">
+                    <h4>Quick Summary:</h4>
+                    <ul>
+                        <li><strong>Target:</strong> <span id="final-target-name"></span></li>
+                        <li><strong>Your Code:</strong> <span id="final-code"></span></li>
+                        <li><strong>Hotkey:</strong> <span id="final-hotkey"></span></li>
+                    </ul>
+                </div>
+                
+                <p><strong>What's next?</strong></p>
+                <ul class="feature-list">
+                    <li>Share your code with your contact</li>
+                    <li>Ask them to add you as a target in their Blink app</li>
+                    <li>Press your hotkey to start calling!</li>
+                    <li>Right-click the tray icon to access settings</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="wizard-actions">
+            <button id="back-btn" class="btn btn-secondary" onclick="previousStep()" style="display: none;">Back</button>
+            <div style="flex: 1;"></div>
+            <button id="next-btn" class="btn btn-primary" onclick="nextStep()">Get Started</button>
+            <button id="finish-btn" class="btn btn-primary" onclick="finishSetup()" style="display: none;">Start Using Blink</button>
+        </div>
+    </div>
+
+    <script src="setup-wizard.js"></script>
+</body>
+</html>
